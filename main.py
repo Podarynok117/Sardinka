@@ -4,29 +4,43 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 
-class LikeApp(App):
-    def build(self):
-
-        self.mainBox=BoxLayout(orientation="vertical")
+class Rate(BoxLayout):
+    def __init__(self):
+        super().__init__()
+        self.orientation="vertical"
         btnBox=BoxLayout()
-        lbl_title=Label(text="Як тобі цей кіт??????", font_size=32, halign="center", size_hint=[1,0.1])
+        lbl_title=Label(text="Як тобі цей кіт?????? (або не кіт)", font_size=32, halign="center", size_hint=[1,0.1])
 
-        btn_like=Button(text="Like", font_size=24, size_hint=[0.5,0.5], on_press=self.like)
-        btn_dislike=Button(text="Dislike", font_size=24, size_hint=[0.5,0.5], on_press=self.dislike)
+        self.buttons=[]
 
         self.img=Image(source="photo/cat2.jpg", size_hint=[1,0.6])
-        self.mainBox.add_widget(lbl_title)
-        self.mainBox.add_widget(self.img)
+        self.add_widget(lbl_title)
+        self.add_widget(self.img)
 
-        btnBox.add_widget(btn_like)
-        btnBox.add_widget(btn_dislike)
+        for i in range(5):
+            btn=Button(text=str(i+1), background_normal="images/star0.png",
+                        background_down="images/star0.png", color=[0,0,0,0], 
+                        on_press=self.rating)
+            self.buttons.append(btn)
+            btnBox.add_widget(btn)
+        self.add_widget(btnBox)
+    def rating(self,btn):
+        index=int(btn.text)-1
+        for i in range(len(self.buttons)):
+            if i<=index:
+                self.buttons[i].background_normal="images/star1.png"
+                self.buttons[i].background_down="images/star1.png"
+            else:
+                self.buttons[i].background_normal="images/star0.png"
+                self.buttons[i].background_down="images/star0.png"
 
-        self.mainBox.add_widget(btnBox)
+class LikeApp(App):
+    def build(self):
+        self.mainBox=BoxLayout(orientation="vertical")
+        rate=Rate()
+        self.mainBox.add_widget(rate)
         return self.mainBox
-    def like(self,btn):
-        print("liked")
-    def dislike(self,btn):
-        print("disliked")
+
 
 LikeApp().run()
 
